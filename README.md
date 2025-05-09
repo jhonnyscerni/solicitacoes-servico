@@ -48,7 +48,7 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 Clone o Repositório:
 
 
-git clone https://github.com/seu-repositorio/sistema-solicitacoes.git
+git clone https://github.com/seu-repositorio/sistema-solicitacoes
 cd sistema-solicitacoes
 Construa o Projeto: Execute o comando Maven para construir o projeto:
 
