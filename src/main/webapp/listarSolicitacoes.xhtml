@@ -1,0 +1,86 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="titulo">Pesquisa de clientes</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="frmPesquisa">
+            <h1>Pesquisa de clientes</h1>
+            <p:messages autoUpdate="true" closable="true"/>
+
+            <p:toolbar style="margin-top: 20px">
+                <p:toolbarGroup>
+                    <h:commandButton value="Pesquisar" action="#{solicitacaoBean.listarSolicitacoes}"
+                                     update="@form"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:button value="Novo" outcome="/cadastrarSolicitacao" />
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:panelGrid columns="2" id="painel" style="width: 100%; margin-top: 20px"
+                         columnClasses="rotulo, campo">
+
+                <h:outputLabel for="tipoServicoFiltro" value="Tipo de Serviço:"/>
+                <p:selectOneMenu id="tipoServicoFiltro" value="#{solicitacaoBean.tipoServicoFiltro}">
+                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                    <f:selectItem itemLabel="Iluminação" itemValue="Iluminação"/>
+                    <f:selectItem itemLabel="Limpeza" itemValue="Limpeza"/>
+                    <f:selectItem itemLabel="Manutenção de Vias" itemValue="Manutenção de Vias"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel for="statusFiltro" value="Status:"/>
+                <p:selectOneMenu id="statusFiltro" value="#{solicitacaoBean.statusFiltro}">
+                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                    <f:selectItem itemLabel="Aguardando Atendimento" itemValue="Aguardando Atendimento"/>
+                    <f:selectItem itemLabel="Em Andamento" itemValue="Em Andamento"/>
+                    <f:selectItem itemLabel="Concluído" itemValue="Concluído"/>
+                </p:selectOneMenu>
+
+
+            </p:panelGrid>
+
+            <p:dataTable id="solicitacoesTable" value="#{solicitacaoBean.solicitacoes}" var="solicitacao"
+                         paginator="true" rows="10">
+                <p:column headerText="Nome do Solicitante">
+                    #{solicitacao.nomeSolicitante}
+                </p:column>
+                <p:column headerText="Tipo de Serviço">
+                    #{solicitacao.tipoServico}
+                </p:column>
+                <p:column headerText="Status">
+                    #{solicitacao.status}
+                </p:column>
+                <p:column headerText="Data da Solicitação">
+                    #{solicitacao.dataSolicitacao}
+                </p:column>
+
+                <p:column>
+                    <p:button value="Editar" outcome="/cadastrarSolicitacao" icon="ui-icon-pencil" title="Editar">
+                        <f:param name="produto" value="#{solicitacao.id}"/>
+                    </p:button>
+
+                    <p:commandButton value="Deletar" icon="ui-icon-trash" title="Excluir"
+                                     oncomplete="PF('confirmacaoExclusao').show()"
+                                     process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+                        <f:setPropertyActionListener target="#{solicitacaoBean.solicitacao}"
+                                                     value="#{solicitacao}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog header="Exclusão de solicitação"
+                             message="Tem certeza que deseja excluir o solicitação #{solicitacaoBean.solicitacao.id}?"
+                             widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+                <p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;"/>
+                <p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+                                 action="#{solicitacaoBean.deletar}" process="@this"
+                                 update=":frmPesquisa:solicitacoesTable"/>
+            </p:confirmDialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
